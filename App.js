@@ -1,20 +1,62 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import Home from './screens/Home';
+import Settings from './screens/Settings'
+import home from './assets/home.png'
+import settings from './assets/settings.png'
+import myCard from './assets/myCards.png'
+import statistics from './assets/statictics.png'
+import { Image, Appearance, useColorScheme } from 'react-native';
+import MyCard from './screens/MyCard';
+import Statistics from './screens/Statistics';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+
+
+function App() {
+  const colorScheme = useColorScheme();
+  const isDarkTheme = colorScheme === 'dark';
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
+      <Tab.Navigator screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            const iconColor = focused ? color : 'gray'
+            if (route.name === 'Home') {
+              iconName = focused
+                ? home
+                : home;
+            } else if (route.name === 'Settings') {
+              iconName = focused
+                ? settings
+                : settings;
+            }
+             else if (route.name === 'MyCard') {
+              iconName = focused
+                ? myCard
+                : myCard;
+            } else if (route.name === 'Statistics') {
+              iconName = focused
+                ? statistics
+                : statistics;
+            }
+
+            return <Image source={iconName} style={{width: 25, height: 25}}/>;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'blue',
+          inactiveTintColor: 'gray',
+        }}>
+        <Tab.Screen name="Home" component={Home} options={{headerShown: false}}/>
+        <Tab.Screen name="MyCard" component={MyCard} options={{headerShown: false}}/>
+        <Tab.Screen name="Statistics" component={Statistics} options={{headerShown: false}}/>
+        <Tab.Screen name="Settings" component={Settings} options={{headerShown: false}}/>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
